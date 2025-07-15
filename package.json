@@ -1,0 +1,14 @@
+{
+  "name": "@sinova/prettier-config",
+  "version": "1.0.0",
+  "description": "Sinova Prettier config",
+  "type": "module",
+  "exports": "./index.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  }
+}
