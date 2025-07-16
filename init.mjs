@@ -14,6 +14,31 @@ const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8"));
 const projectRoot = process.cwd();
 const prettierConfigPath = path.join(projectRoot, ".prettierrc.mjs");
 
+function generateConfigContent(packageName, existingConfig = null) {
+  const baseConfig = `import { resolveConfig } from '${packageName}';
+
+export default await resolveConfig({
+  // optionally override defaults here
+});`;
+
+  if (existingConfig) {
+    return `${baseConfig}
+
+// Previous configuration (commented out):
+${existingConfig
+  .split("\n")
+  .map((line) => `// ${line}`)
+  .join("\n")}`;
+  }
+
+  return baseConfig;
+}
+
+function handleError(message, err) {
+  console.error(`❌ ${message}:`, err.message);
+  process.exit(1);
+}
+
 async function main() {
   console.log(`🧼 Initializing Prettier with ${packageJson.name} config...`);
 
@@ -34,47 +59,27 @@ async function main() {
       console.log(`📦 Running: ${installCmd}`);
       execSync(installCmd, { stdio: "inherit" });
     } catch (err) {
-      console.error("❌ Failed to install plugins:", err.message);
-      process.exit(1);
+      handleError("Failed to install plugins", err);
     }
   }
 
-  const newConfigContent = `import { resolveConfig } from '${packageJson.name}';
-
-export default await resolveConfig({
-  // optionally override defaults here
-});
-`;
-
   try {
     const existingConfig = await fs.readFile(prettierConfigPath, "utf-8");
-
-    const updatedConfigContent = `import { resolveConfig } from '${
-      packageJson.name
-    }';
-
-export default await resolveConfig({
-  // optionally override defaults here
-});
-
-// Previous configuration (commented out):
-${existingConfig
-  .split("\n")
-  .map((line) => `// ${line}`)
-  .join("\n")}
-`;
-
-    await fs.writeFile(prettierConfigPath, updatedConfigContent);
+    const configContent = generateConfigContent(
+      packageJson.name,
+      existingConfig
+    );
+    await fs.writeFile(prettierConfigPath, configContent);
     console.log(
       "✅ .prettierrc.mjs updated with new config (previous config commented out)."
     );
   } catch (err) {
     if (err.code === "ENOENT") {
-      await fs.writeFile(prettierConfigPath, newConfigContent);
+      const configContent = generateConfigContent(packageJson.name);
+      await fs.writeFile(prettierConfigPath, configContent);
       console.log("✅ .prettierrc.mjs created.");
     } else {
-      console.error("❌ Error handling config file:", err.message);
-      process.exit(1);
+      handleError("Error handling config file", err);
     }
   }
 
@@ -113,8 +118,7 @@ ${existingConfig
       console.log("ℹ️  Format scripts already exist in package.json");
     }
   } catch (err) {
-    console.error("❌ Error updating package.json scripts:", err.message);
-    process.exit(1);
+    handleError("Error updating package.json scripts", err);
   }
 
   console.log("✨ Done!");
