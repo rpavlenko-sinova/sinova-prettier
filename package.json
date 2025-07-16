@@ -1,6 +1,7 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
-  "version": "1.0.7",
+  "version": "1.0.15",
+
   "description": "Sinova Prettier config",
   "type": "module",
   "exports": "./index.js",
@@ -8,13 +9,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "bin": {
+    "sinova-prettier-init": "./init.mjs"
+  },
   "dependencies": {
-    "prettier-plugin-tailwindcss": ">=0.5.0"
+    "inquirer": "^9.0.0",
+    "lodash.merge": "^4.6.2"
   },
   "peerDependencies": {
-    "prettier": ">=3.0.0"
-  },
-  "bundledDependencies": [
-    "prettier-plugin-tailwindcss"
-  ]
+    "prettier": ">=3.0.0",
+    "prettier-plugin-tailwindcss": ">=0.6.10"
+  }
 }
