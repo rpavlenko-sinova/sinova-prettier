@@ -4,7 +4,7 @@ To install current setup use
 
 or
 
-`npm add @rpavlenko.sinova/prettier-config`
+`pnpm add @rpavlenko.sinova/prettier-config`
 
 then run for basic setup
 
