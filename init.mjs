@@ -7,11 +7,17 @@ import inquirer from "inquirer";
 import { requiredPlugins } from "./index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const packageJsonPath = path.join(__dirname, "package.json");
+const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8"));
+
 const projectRoot = process.cwd();
 const prettierConfigPath = path.join(projectRoot, ".prettierrc.mjs");
 
 async function main() {
-  console.log("🧼 Initializing Prettier with sinova config...");
+  console.log(
+    `🧼 Initializing Prettier with ${packageJson.name} config...`
+  );
 
   const { shouldInstall } = await inquirer.prompt([
     {
@@ -35,7 +41,7 @@ async function main() {
     }
   }
 
-  const configContent = `import { resolveConfig } from 'sinova-prettier';
+  const configContent = `import { resolveConfig } from '${packageJson.name}';
 
 export default await resolveConfig({
   // optionally override defaults here
