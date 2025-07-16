@@ -1,3 +1,5 @@
+import merge from "lodash.merge";
+
 export const baseConfig = {
   printWidth: 120,
   trailingComma: "all",
@@ -16,9 +18,5 @@ export function resolveConfig(userConfig = {}) {
 
   plugins.push(...requiredPlugins);
 
-  return {
-    ...baseConfig,
-    ...userConfig,
-    plugins,
-  };
+  return merge({}, baseConfig, userConfig, { plugins });
 }
