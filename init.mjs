@@ -15,9 +15,7 @@ const projectRoot = process.cwd();
 const prettierConfigPath = path.join(projectRoot, ".prettierrc.mjs");
 
 async function main() {
-  console.log(
-    `🧼 Initializing Prettier with ${packageJson.name} config...`
-  );
+  console.log(`🧼 Initializing Prettier with ${packageJson.name} config...`);
 
   const { shouldInstall } = await inquirer.prompt([
     {
@@ -32,7 +30,7 @@ async function main() {
 
   if (shouldInstall) {
     try {
-      const installCmd = `npm install -D ${requiredPlugins.join(" ")}`;
+      const installCmd = `pnpm add -D ${requiredPlugins.join(" ")}`;
       console.log(`📦 Running: ${installCmd}`);
       execSync(installCmd, { stdio: "inherit" });
     } catch (err) {
@@ -41,15 +39,84 @@ async function main() {
     }
   }
 
-  const configContent = `import { resolveConfig } from '${packageJson.name}';
+  const newConfigContent = `import { resolveConfig } from '${packageJson.name}';
 
 export default await resolveConfig({
   // optionally override defaults here
 });
 `;
 
-  await fs.writeFile(prettierConfigPath, configContent);
-  console.log("✅ .prettierrc.mjs created.");
+  try {
+    const existingConfig = await fs.readFile(prettierConfigPath, "utf-8");
+
+    const updatedConfigContent = `import { resolveConfig } from '${
+      packageJson.name
+    }';
+
+export default await resolveConfig({
+  // optionally override defaults here
+});
+
+// Previous configuration (commented out):
+${existingConfig
+  .split("\n")
+  .map((line) => `// ${line}`)
+  .join("\n")}
+`;
+
+    await fs.writeFile(prettierConfigPath, updatedConfigContent);
+    console.log(
+      "✅ .prettierrc.mjs updated with new config (previous config commented out)."
+    );
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      await fs.writeFile(prettierConfigPath, newConfigContent);
+      console.log("✅ .prettierrc.mjs created.");
+    } else {
+      console.error("❌ Error handling config file:", err.message);
+      process.exit(1);
+    }
+  }
+
+  const targetPackageJsonPath = path.join(projectRoot, "package.json");
+
+  try {
+    const targetPackageJson = JSON.parse(
+      await fs.readFile(targetPackageJsonPath, "utf-8")
+    );
+
+    const formatScripts = {
+      format: "prettier . --write --log-level=warn",
+      "format:check": "prettier . --check --log-level=warn",
+    };
+
+    let scriptsAdded = false;
+
+    if (!targetPackageJson.scripts) {
+      targetPackageJson.scripts = {};
+    }
+
+    for (const [scriptName, scriptCommand] of Object.entries(formatScripts)) {
+      if (!targetPackageJson.scripts[scriptName]) {
+        targetPackageJson.scripts[scriptName] = scriptCommand;
+        scriptsAdded = true;
+      }
+    }
+
+    if (scriptsAdded) {
+      await fs.writeFile(
+        targetPackageJsonPath,
+        JSON.stringify(targetPackageJson, null, 2) + "\n"
+      );
+      console.log("✅ Format scripts added to package.json");
+    } else {
+      console.log("ℹ️  Format scripts already exist in package.json");
+    }
+  } catch (err) {
+    console.error("❌ Error updating package.json scripts:", err.message);
+    process.exit(1);
+  }
+
   console.log("✨ Done!");
 }
 

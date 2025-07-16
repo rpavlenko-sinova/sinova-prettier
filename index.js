@@ -7,19 +7,14 @@ export const baseConfig = {
 
 export const requiredPlugins = ["prettier-plugin-tailwindcss"];
 
-export async function resolveConfig(userConfig = {}) {
+export function resolveConfig(userConfig = {}) {
   const plugins = [];
 
-  for (const pluginName of requiredPlugins) {
-    try {
-      const mod = await import(pluginName);
-      plugins.push(mod.default || mod);
-    } catch (e) {
-      console.warn(
-        `[sinova-prettier] Plugin ${pluginName} not found. Did you forget to install it?`
-      );
-    }
+  if (userConfig.plugins) {
+    plugins.push(...userConfig.plugins);
   }
+
+  plugins.push(...requiredPlugins);
 
   return {
     ...baseConfig,

@@ -1,6 +1,6 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
-  "version": "1.0.6",
+  "version": "1.0.14",
   "description": "Sinova Prettier config",
   "type": "module",
   "exports": "./index.js",
@@ -11,14 +11,11 @@
   "bin": {
     "sinova-prettier-init": "./init.mjs"
   },
-  "scripts": {
-    "format": "prettier . --write --log-level=warn",
-    "format:check": "prettier . --check --log-level=warn"
-  },
   "dependencies": {
     "inquirer": "^9.0.0"
   },
   "peerDependencies": {
-    "prettier": "*"
+    "prettier": ">=3.0.0",
+    "prettier-plugin-tailwindcss": ">=0.6.10"
   }
 }
