@@ -1,12 +1,13 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
   "version": "1.0.20",
-  "description": "Sinova Prettier config",
+  "description": "Sinova Development Prettier config",
   "type": "module",
   "exports": "./index.js",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
+  "scripts": {
+    "format": "prettier . --write --log-level=warn",
+    "format:check": "prettier . --check --log-level=warn"
   },
   "bin": {
     "sinova-prettier-init": "./init.mjs"
@@ -15,8 +16,15 @@
     "inquirer": "^9.0.0",
     "lodash.merge": "^4.6.2"
   },
+  "devDependencies": {
+    "prettier": ">=3.0.0",
+    "prettier-plugin-tailwindcss": ">=0.6.10"
+  },
   "peerDependencies": {
     "prettier": ">=3.0.0",
     "prettier-plugin-tailwindcss": ">=0.6.10"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

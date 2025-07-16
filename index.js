@@ -1,22 +1,16 @@
-import merge from "lodash.merge";
+import merge from 'lodash.merge';
 
 export const baseConfig = {
   printWidth: 120,
-  trailingComma: "all",
+  trailingComma: 'all',
   singleQuote: true,
   singleAttributePerLine: true,
 };
 
-export const requiredPlugins = ["prettier-plugin-tailwindcss"];
+export const requiredPlugins = ['prettier-plugin-tailwindcss'];
 
-export function resolveConfig(userConfig = {}) {
-  const plugins = [];
+export function resolveConfig(externalConfig = {}) {
+  const plugins = merge([], externalConfig?.plugins ?? [], requiredPlugins);
 
-  if (userConfig.plugins) {
-    merge(plugins, userConfig.plugins);
-  }
-
-  merge(plugins, requiredPlugins);
-
-  return merge({}, baseConfig, userConfig, { plugins });
+  return merge({}, baseConfig, externalConfig, { plugins });
 }

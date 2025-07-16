@@ -1,18 +1,20 @@
 #!/usr/bin/env node
-import fs from "fs/promises";
-import { execSync } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
-import inquirer from "inquirer";
-import { requiredPlugins } from "./index.js";
+import fs from 'fs/promises';
+import { execSync } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import inquirer from 'inquirer';
+import merge from 'lodash.merge';
+
+import { requiredPlugins } from './index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const packageJsonPath = path.join(__dirname, "package.json");
-const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8"));
+const packageJsonPath = path.join(__dirname, 'package.json');
+const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
-const prettierConfigPath = path.join(projectRoot, ".prettierrc.mjs");
+const prettierConfigPath = path.join(projectRoot, '.prettierrc.mjs');
 
 function generateConfigContent(packageName, existingConfig = null) {
   const baseConfig = `import { resolveConfig } from '${packageName}';
@@ -26,9 +28,9 @@ export default await resolveConfig({
 
 // Previous configuration (commented out):
 ${existingConfig
-  .split("\n")
+  .split('\n')
   .map((line) => `// ${line}`)
-  .join("\n")}`;
+  .join('\n')}`;
   }
 
   return baseConfig;
@@ -44,84 +46,61 @@ async function main() {
 
   const { shouldInstall } = await inquirer.prompt([
     {
-      type: "confirm",
-      name: "shouldInstall",
-      message: `Install required Prettier plugins (${requiredPlugins.join(
-        ", "
-      )})?`,
+      type: 'confirm',
+      name: 'shouldInstall',
+      message: `Install required Prettier plugins (${requiredPlugins.join(', ')})?`,
       default: true,
     },
   ]);
 
   if (shouldInstall) {
     try {
-      const installCmd = `pnpm add -D ${requiredPlugins.join(" ")}`;
+      const installCmd = `pnpm add -D ${requiredPlugins.join(' ')}`;
       console.log(`📦 Running: ${installCmd}`);
-      execSync(installCmd, { stdio: "inherit" });
+      execSync(installCmd, { stdio: 'inherit' });
     } catch (err) {
-      handleError("Failed to install plugins", err);
+      handleError('Failed to install plugins', err);
     }
   }
 
   try {
-    const existingConfig = await fs.readFile(prettierConfigPath, "utf-8");
-    const configContent = generateConfigContent(
-      packageJson.name,
-      existingConfig
-    );
+    const existingConfig = await fs.readFile(prettierConfigPath, 'utf-8');
+    const configContent = generateConfigContent(packageJson.name, existingConfig);
     await fs.writeFile(prettierConfigPath, configContent);
-    console.log(
-      "✅ .prettierrc.mjs updated with new config (previous config commented out)."
-    );
+    console.info('✅ .prettierrc.mjs updated with new config (previous config commented out).');
   } catch (err) {
-    if (err.code === "ENOENT") {
+    if (err.code === 'ENOENT') {
       const configContent = generateConfigContent(packageJson.name);
       await fs.writeFile(prettierConfigPath, configContent);
-      console.log("✅ .prettierrc.mjs created.");
+      console.info('✅ .prettierrc.mjs created.');
     } else {
-      handleError("Error handling config file", err);
+      handleError('Error handling config file', err);
     }
   }
 
-  const targetPackageJsonPath = path.join(projectRoot, "package.json");
+  const targetPackageJsonPath = path.join(projectRoot, 'package.json');
 
   try {
-    const targetPackageJson = JSON.parse(
-      await fs.readFile(targetPackageJsonPath, "utf-8")
-    );
+    const targetPackageJson = JSON.parse(await fs.readFile(targetPackageJsonPath, 'utf-8'));
 
     const formatScripts = {
-      format: "prettier . --write --log-level=warn",
-      "format:check": "prettier . --check --log-level=warn",
+      format: 'prettier . --write --log-level=warn',
+      'format:check': 'prettier . --check --log-level=warn',
     };
-
-    let scriptsAdded = false;
 
     if (!targetPackageJson.scripts) {
       targetPackageJson.scripts = {};
     }
 
-    for (const [scriptName, scriptCommand] of Object.entries(formatScripts)) {
-      if (!targetPackageJson.scripts[scriptName]) {
-        targetPackageJson.scripts[scriptName] = scriptCommand;
-        scriptsAdded = true;
-      }
-    }
+    targetPackageJson.scripts = merge({}, targetPackageJson.scripts, formatScripts);
 
-    if (scriptsAdded) {
-      await fs.writeFile(
-        targetPackageJsonPath,
-        JSON.stringify(targetPackageJson, null, 2) + "\n"
-      );
-      console.log("✅ Format scripts added to package.json");
-    } else {
-      console.log("ℹ️  Format scripts already exist in package.json");
-    }
+    await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
+    console.info('✅ Format scripts added to package.json');
   } catch (err) {
-    handleError("Error updating package.json scripts", err);
+    handleError('Error updating package.json scripts', err);
   }
 
-  console.log("✨ Done!");
+  console.info('✨ Done!');
 }
 
 main();
