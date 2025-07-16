@@ -13,10 +13,10 @@ export function resolveConfig(userConfig = {}) {
   const plugins = [];
 
   if (userConfig.plugins) {
-    plugins.push(...userConfig.plugins);
+    merge(plugins, userConfig.plugins);
   }
 
-  plugins.push(...requiredPlugins);
+  merge(plugins, requiredPlugins);
 
   return merge({}, baseConfig, userConfig, { plugins });
 }

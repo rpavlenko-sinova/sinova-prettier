@@ -1,6 +1,6 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
-  "version": "1.0.15",
+  "version": "1.0.19",
   "description": "Sinova Prettier config",
   "type": "module",
   "exports": "./index.js",
@@ -9,7 +9,11 @@
     "access": "public"
   },
   "bin": {
-    "sinova-prettier-init": "./init.mjs"
+    "sinova-prettier-init": "./init.mjs",
+    "@rpavlenko.sinova/prettier-config": "./postinstall.mjs"
+  },
+  "scripts": {
+    "postinstall": "node ./postinstall.mjs"
   },
   "dependencies": {
     "inquirer": "^9.0.0",
@@ -18,5 +22,10 @@
   "peerDependencies": {
     "prettier": ">=3.0.0",
     "prettier-plugin-tailwindcss": ">=0.6.10"
+  },
+  "pnpm": {
+    "installConfig": {
+      "enablePrePostScripts": true
+    }
   }
 }
