@@ -17,7 +17,7 @@ export async function setupHusky() {
   console.log('\n🐕 Setting up Husky...');
 
   try {
-    const huskyInstallCmd = 'pnpm add -D husky lint-staged';
+    const huskyInstallCmd = 'pnpm add -D husky';
     console.log(`📦 Running: ${huskyInstallCmd}`);
     execSync(huskyInstallCmd, { stdio: 'inherit' });
 
