@@ -1,23 +1,64 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
-  "version": "1.0.15",
-
-  "description": "Sinova Prettier config",
+  "version": "1.0.27",
+  "description": "Sinova Development Prettier config",
   "type": "module",
   "exports": "./index.js",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
+  "scripts": {
+    "format": "prettier . --write --log-level=warn",
+    "format:check": "prettier . --check --log-level=warn",
+    "prepare": "husky",
+    "pre-commit": "lint-staged"
   },
   "bin": {
-    "sinova-prettier-init": "./init.mjs"
+    "sinova-prettier-init": "./init.mjs",
+    "sinova-husky-init": "./husky-init.mjs",
+    "sinova-eslint-init": "./eslint-init.mjs"
   },
   "dependencies": {
     "inquirer": "^9.0.0",
     "lodash.merge": "^4.6.2"
   },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@release-it/conventional-changelog": "^10.0.1",
+    "eslint": "^9.31.0",
+    "husky": "^9.1.7",
+    "prettier": ">=3.0.0",
+    "prettier-plugin-tailwindcss": ">=0.6.10",
+    "release-it": "^19.0.4"
+  },
   "peerDependencies": {
+    "@eslint/js": "^9.31.0",
+    "eslint": "^9.31.0",
+    "husky": ">=9.1.7",
+    "lint-staged": ">=15.0.0",
     "prettier": ">=3.0.0",
     "prettier-plugin-tailwindcss": ">=0.6.10"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown",
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "eslint"
+  },
+  "release-it": {
+    "git": {
+      "tagName": "v${version}",
+      "commitMessage": "release: v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "conventionalcommits"
+      }
+    }
   }
 }
