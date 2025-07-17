@@ -5,7 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 
-import { requiredPlugins } from './index.js';
+import { requiredPlugins } from './prettier-config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -17,7 +17,7 @@ const prettierConfigPath = path.join(projectRoot, '.prettierrc.mjs');
 const prettierIgnorePath = path.join(projectRoot, '.prettierignore');
 
 function generateConfigContent(packageName, existingConfig = null) {
-  const baseConfig = `import { resolveConfig } from '${packageName}';
+  const baseConfig = `import { resolveConfig } from '${packageName}/prettier-config.js';
 
 export default await resolveConfig({
   // optionally override defaults here

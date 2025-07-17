@@ -1,3 +1,3 @@
-import { resolveConfig } from './index.js';
+import { resolveConfig } from './prettier-config.js';
 
 export default resolveConfig();
