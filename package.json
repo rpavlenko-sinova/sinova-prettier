@@ -1,7 +1,7 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
   "version": "1.0.37",
-  "description": "Sinova Development Prettier config",
+  "description": "Sinova Development repos configs",
   "type": "module",
   "exports": {
     "./prettier-config": "./prettier-config.js"
@@ -11,13 +11,12 @@
     "format": "prettier . --write --log-level=warn",
     "format:check": "prettier . --check --log-level=warn",
     "prepare": "husky",
-    "pre-commit": "lint-staged"
+    "pre-commit": "pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty"
   },
   "bin": {
     "sinova-general-config-init": "./init.mjs",
     "sinova-husky-init": "./husky-init.mjs",
-    "sinova-prettier-init": "./prettier-init.mjs",
-    "sinova-lint-staged-init": "./lint-staged-init.mjs"
+    "sinova-prettier-init": "./prettier-init.mjs"
   },
   "dependencies": {
     "inquirer": "^9.0.0",
@@ -40,8 +39,7 @@
     "access": "public"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown",
-    "*.{js,jsx,ts,tsx,mjs,cjs}": "prettier --check"
+    "**/*": "prettier --write --ignore-unknown"
   },
   "release-it": {
     "git": {
