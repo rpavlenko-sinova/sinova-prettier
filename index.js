@@ -10,7 +10,7 @@ export const baseConfig = {
 export const requiredPlugins = ['prettier-plugin-tailwindcss'];
 
 export function resolveConfig(externalConfig = {}) {
-  const plugins = merge([], externalConfig?.plugins ?? [], requiredPlugins);
+  const plugins = [...(externalConfig?.plugins ?? []), ...requiredPlugins];
 
   return merge({}, baseConfig, externalConfig, { plugins });
 }
