@@ -1,6 +1,6 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "description": "Sinova Development repos configs",
   "type": "module",
   "exports": {
