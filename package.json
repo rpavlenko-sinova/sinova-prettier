@@ -3,7 +3,9 @@
   "version": "1.0.35",
   "description": "Sinova Development Prettier config",
   "type": "module",
-  "exports": "./prettier-config.js",
+  "exports": {
+    "./prettier-config": "./prettier-config.js"
+  },
   "license": "MIT",
   "scripts": {
     "format": "prettier . --write --log-level=warn",
@@ -14,7 +16,8 @@
   "bin": {
     "sinova-general-config-init": "./init.mjs",
     "sinova-husky-init": "./husky-init.mjs",
-    "sinova-prettier-init": "./prettier-init.mjs"
+    "sinova-prettier-init": "./prettier-init.mjs",
+    "sinova-lint-staged-init": "./lint-staged-init.mjs"
   },
   "dependencies": {
     "inquirer": "^9.0.0",
