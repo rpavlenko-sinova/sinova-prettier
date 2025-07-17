@@ -8,4 +8,4 @@ or
 
 then run for basic setup
 
-`npx @rpavlenko.sinova/prettier-config`
+`npx sinova-general-config-init`
