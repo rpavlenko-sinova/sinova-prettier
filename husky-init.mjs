@@ -38,6 +38,10 @@ export async function setupHusky() {
       'pre-commit': 'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit',
     };
 
+    if (!targetPackageJson.scripts) {
+      targetPackageJson.scripts = {};
+    }
+
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, huskyScripts);
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
     console.info('✅ Pre-commit script added to package.json');
