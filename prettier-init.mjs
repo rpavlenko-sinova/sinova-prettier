@@ -19,9 +19,10 @@ const prettierIgnorePath = path.join(projectRoot, '.prettierignore');
 function generateConfigContent(packageName, existingConfig = null) {
   const baseConfig = `import { resolveConfig } from '${packageName}/prettier-config';
 
-export default await resolveConfig({
+export default resolveConfig({
   // optionally override defaults here
-});`;
+});
+`;
 
   if (existingConfig) {
     return `${baseConfig}
