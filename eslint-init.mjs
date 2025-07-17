@@ -55,7 +55,7 @@ export async function setupEslint() {
     };
 
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, lintScripts);
-    targetPackageJson.lintStaged = merge({}, targetPackageJson['lint-staged'], lintStagedConfig);
+    targetPackageJson['lint-staged'] = merge({}, targetPackageJson['lint-staged'], lintStagedConfig);
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
     console.info('✅ Lint scripts added to package.json');
   } catch (err) {
