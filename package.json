@@ -1,6 +1,6 @@
 {
   "name": "@rpavlenko.sinova/prettier-config",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "Sinova Development Prettier config",
   "type": "module",
   "exports": "./index.js",
